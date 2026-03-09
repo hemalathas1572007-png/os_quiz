@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Operating System Quiz</title>
+
+<style>
+
+body{
+font-family: Arial;
+background-image:url("https://images.unsplash.com/photo-1518770660439-4636190af475");
+background-size:cover;
+color:white;
+text-align:center;
+}
+
+.container{
+background:rgba(0,0,0,0.8);
+width:650px;
+margin:auto;
+margin-top:50px;
+padding:30px;
+border-radius:10px;
+}
+
+#quizPage,#resultPage{
+display:none;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+background:#00bcd4;
+border:none;
+color:white;
+cursor:pointer;
+border-radius:5px;
+}
+
+button:hover{
+background:#0097a7;
+}
+
+.options{
+text-align:left;
+margin-left:150px;
+}
+
+table{
+margin:auto;
+margin-top:20px;
+border-collapse:collapse;
+width:80%;
+}
+
+th,td{
+border:1px solid white;
+padding:10px;
+}
+
+th{
+background:#009688;
+}
+
+input{
+padding:10px;
+width:200px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+
+<div id="startPage">
+
+<h1>Operating System Quiz</h1>
+
+<p>
+
+Test your knowledge on process management, memory management,
+CPU scheduling, and file systems.
+</p>
+
+<input type="text" id="name" placeholder="Enter your name">
+
+<br><br>
+
+<button onclick="startQuiz()">Start Quiz</button>
+
+</div>
+
+
+
+<div id="quizPage">
+
+<h2 id="question"></h2>
+
+<div class="options">
+
+<label><input type="radio" name="option" value="0"> <span id="op0"></span></label><br><br>
+
+<label><input type="radio" name="option" value="1"> <span id="op1"></span></label><br><br>
+
+<label><input type="radio" name="option" value="2"> <span id="op2"></span></label><br><br>
+
+<label><input type="radio" name="option" value="3"> <span id="op3"></span></label>
+
+</div>
+
+<br>
+
+<button onclick="nextQuestion()">Next</button>
+
+</div>
+
+
+
+<div id="resultPage">
+
+<h2 id="finalScore"></h2>
+
+<h3>Score Board</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>Participant</th>
+<th>Score</th>
+</tr>
+</thead>
+
+<tbody id="scoreboard">
+</tbody>
+
+</table>
+
+<br>
+
+<button onclick="restartQuiz()">Next Participant</button>
+
+</div>
+
+</div>
+
+
+
+<script>
+
+let qIndex=0
+let score=0
+let playerName=""
+
+let participants=[]
+
+let questions=[
+
+{q:"1. What is the main function of an OS?",o:["Manage hardware and software","Play games","Write programs","Browse internet"],a:0},
+
+{q:"2. Which OS is open source?",o:["Windows","Linux","MacOS","DOS"],a:1},
+
+{q:"3. Which scheduling algorithm uses time slice?",o:["FCFS","Round Robin","SJF","Priority"],a:1},
+
+{q:"4. Which memory is fastest?",o:["RAM","Cache","Hard Disk","ROM"],a:1},
+
+{q:"5. Which OS is used in smartphones?",o:["Android","DOS","Unix","Windows"],a:0},
+
+{q:"6. Which manages processes?",o:["Scheduler","Compiler","Assembler","Loader"],a:0},
+
+{q:"7. Which memory is non volatile?",o:["RAM","Cache","ROM","Register"],a:2},
+
+{q:"8. Full form of CPU?",o:["Central Process Unit","Central Processing Unit","Computer Process Unit","Control Processing Unit"],a:1},
+
+{q:"9. Microsoft OS?",o:["Linux","Windows","Unix","Ubuntu"],a:1},
+
+{q:"10. Permanent storage device?",o:["RAM","Cache","Hard Disk","Register"],a:2},
+
+{q:"11. Shortest job first algorithm?",o:["FCFS","SJF","RR","Priority"],a:1},
+
+{q:"12. Multiuser OS?",o:["Unix","DOS","Windows 3.1","None"],a:0},
+
+{q:"13. Apple computer OS?",o:["Linux","MacOS","DOS","Android"],a:1},
+
+{q:"14. Memory manager handles?",o:["Memory","Files","Devices","Compiler"],a:0},
+
+{q:"15. Running many programs simultaneously?",o:["Multiprocessing","Multitasking","Multiuser","None"],a:1}
+
+]
+
+
+
+function startQuiz(){
+
+playerName=document.getElementById("name").value
+
+if(playerName==""){
+alert("Please enter your name")
+return
+}
+
+document.getElementById("startPage").style.display="none"
+document.getElementById("quizPage").style.display="block"
+
+loadQuestion()
+
+}
+
+
+
+function loadQuestion(){
+
+let q=questions[qIndex]
+
+document.getElementById("question").innerText=q.q
+document.getElementById("op0").innerText=q.o[0]
+document.getElementById("op1").innerText=q.o[1]
+document.getElementById("op2").innerText=q.o[2]
+document.getElementById("op3").innerText=q.o[3]
+
+let options=document.getElementsByName("option")
+options.forEach(o=>o.checked=false)
+
+}
+
+
+
+function nextQuestion(){
+
+let options=document.getElementsByName("option")
+
+let selected=-1
+
+options.forEach(o=>{
+if(o.checked){
+selected=o.value
+}
+})
+
+if(selected==-1){
+alert("Please select an option")
+return
+}
+
+if(selected==questions[qIndex].a){
+score++
+}
+
+qIndex++
+
+if(qIndex<questions.length){
+
+loadQuestion()
+
+}
+
+else{
+
+showResult()
+
+}
+
+}
+
+
+
+function showResult(){
+
+document.getElementById("quizPage").style.display="none"
+document.getElementById("resultPage").style.display="block"
+
+document.getElementById("finalScore").innerText=
+playerName+" your score is "+score+" / 15"
+
+participants.push({name:playerName,score:score})
+
+updateScoreboard()
+
+}
+
+
+
+function updateScoreboard(){
+
+let table=document.getElementById("scoreboard")
+
+table.innerHTML=""
+
+participants.forEach(p=>{
+
+let row=`
+<tr>
+<td>${p.name}</td>
+<td>${p.score}</td>
+</tr>
+`
+
+table.innerHTML+=row
+
+})
+
+}
+
+
+
+function restartQuiz(){
+
+qIndex=0
+score=0
+
+document.getElementById("name").value=""
+
+document.getElementById("resultPage").style.display="none"
+document.getElementById("startPage").style.display="block"
+
+}
+
+</script>
+
+</body>
+</html>
